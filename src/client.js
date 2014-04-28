@@ -7,10 +7,14 @@
    }
 
    RestClient._send = function(url, callback){
-      $.get(URL_BASE + url + '?apikey=' + PUBLIC_API_KEY, callback.bind(this));
+      $.get(URL_BASE + url + '?apikey=' + PUBLIC_API_KEY + '&limit=100', callback.bind(this));
    };
 
    RestClient.getCharacters = function(callback) {
+      RestClient._send(Mq.Urls.CHARACTER, callback);
+   };
+
+   RestClient.getComics = function(callback) {
       RestClient._send(Mq.Urls.CHARACTER, callback);
    };
 

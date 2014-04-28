@@ -1,6 +1,6 @@
 (function(){
 
-   function Autocomplete(typeaheadSelector, data){
+   function Autocomplete(typeaheadJq, data){
 
       var data = new Bloodhound({
          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -10,7 +10,7 @@
 
       data.initialize();
 
-      $(typeaheadSelector).typeahead({
+      typeaheadJq.typeahead({
             hint: true,
             highlight: true,
             minLength: 1
