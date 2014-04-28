@@ -11,7 +11,7 @@
       $.get(URL_BASE + url + '?' + params, callback.bind(this));
    };
 
-   RestClient.getCharactersWithImages = function(callback, limit) {
+   RestClient.getCharactersWithImages = function(callback) {
       var names = [];
       RestClient._send(Mq.Urls.CHARACTER, function(response){
          var processedData = response.data.results.filter(function(character) {
@@ -19,9 +19,9 @@
             return !character.thumbnail.path.match(/image_not_available$/);
          });
          processedData.names = names;
+         processedData.attributionHTML = response.attributionHTML;
          callback(processedData);
-      }, limit);
-
+      });
    };
 
    RestClient.getComicsWithImages = function(callback) {
@@ -35,16 +35,21 @@
    };
 
    RestClient.getWallpapers = function(callback, limit) {
-      RestClient.getCharactersWithImages(function(comicsData, limit){
-         var wallpapers = [],
-             url, imageData;
-         for(var i = 0; i < comicsData.length; i++) {
-            imageData = comicsData[i].thumbnail;
-            url = imageData.path + '/standard_medium.' + imageData.extension;
-            wallpapers.push(url);
-         }
-         callback(wallpapers);
-      });
+      if (RestClient.wallpapers) {
+         callback(RestClient.wallpapers);
+      } else {
+         RestClient.getCharactersWithImages(function(comicsData, limit){
+            var wallpapers = [],
+               url, imageData;
+            for(var i = 0; i < comicsData.length; i++) {
+               imageData = comicsData[i].thumbnail;
+               url = imageData.path + '/standard_medium.' + imageData.extension;
+               wallpapers.push(url);
+            }
+            RestClient.wallpapers = wallpapers;
+            callback(wallpapers);
+         });
+      }
    };
 
 

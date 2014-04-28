@@ -14,12 +14,13 @@
          Game.characterData = response;
          Game.attrubutionJq.html(response.attributionHTML);
          Mq.Autocomplete(Game.inputJq, response.names);
+         Game.inputJq.focus();
          Game.renderNewImage();
       });
    };
 
    Game.renderNewImage = function(){
-      var randomSelection = Game.getRandomInt(Game.characterData.length);
+      var randomSelection = _.random(Game.characterData.length);
       Game.answer = Game.characterData[randomSelection].name;
       var character, thumbnail, img;
 
@@ -87,10 +88,6 @@
       for (var key in obj) {
          Game[key] = obj[key];
       }
-   };
-
-   Game.getRandomInt = function(max) {
-      return Math.floor(Math.random() * (max - 1)) + 0;
    };
 
    Game.answer = null;
