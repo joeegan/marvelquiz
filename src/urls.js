@@ -1,7 +1,8 @@
 (function(){
 
    var Urls = {
-      CHARACTER: '/v1/public/characters'
+      CHARACTER: '/v1/public/characters',
+      COMICS: '/v1/public/comics'
    };
 
    Mq.Urls = Urls;

@@ -5,7 +5,13 @@ body {
 
 .game-wrap {
    margin: 20px auto;
-   width: 500px;
+   width: 512px;
+   background: #fff;
+   padding: 6px;
+}
+
+form {
+   margin-bottom: 0;
 }
 
 .typeahead-wrap {

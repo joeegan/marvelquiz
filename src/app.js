@@ -4,17 +4,16 @@
    }
 
    Game.init = function(){
+
+      Mq.Wallpaper.init();
+
       Game.initialiseDom();
       Game.initialiseEvents();
 
-      Mq.Client.getCharacters(function(response) {
-         var names = [];
-         Game.characterData = response.data.results.filter(function(character) {
-            names.push(character.name);
-            return !character.thumbnail.path.match(/image_not_available$/);
-         });
+      Mq.Client.getCharactersWithImages(function(response) {
+         Game.characterData = response;
          Game.attrubutionJq.html(response.attributionHTML);
-         Mq.Autocomplete(Game.inputJq, names);
+         Mq.Autocomplete(Game.inputJq, response.names);
          Game.renderNewImage();
       });
    };
@@ -35,7 +34,7 @@
             Game.imageJq.attr('src', img);
          }
       }
-   }
+   };
 
    Game.initialiseEvents = function(){
       Game.formJq.on('submit', Game.handleFormSubmit);
@@ -77,9 +76,6 @@
       Game.correctJq.addClass('hidden');
       Game.incorrectJq.html('<strong>Incorrect answer</strong>, it was not ' + guess + '. Try again.').removeClass('hidden');
       Game.inputJq.focus();
-//      setTimeout(function(){
-//         Game.hideAlerts();
-//      }, 1500);
    };
 
    Game.hideAlerts = function(){
@@ -93,18 +89,18 @@
       }
    };
 
-   Game.answer = null;
-
-   Game.characterData = null;
-
    Game.getRandomInt = function(max) {
       return Math.floor(Math.random() * (max - 1)) + 0;
    };
+
+   Game.answer = null;
+
+   Game.characterData = null;
 
    Mq.Game = Game;
 
    $(document).ready(function(){
       Mq.Game.init();
-   })
+   });
 
 })();
