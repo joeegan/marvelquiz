@@ -1,0 +1,10 @@
+{
+  "name": "marvelquiz",
+  "version": "0.0.0",
+  "description": "Marvel quiz",
+  "devDependencies": {
+    "gulp": "^3.6.1",
+    "gulp-uglify": "^0.2.1",
+    "gulp-concat": "^2.2.0"
+  }
+}
