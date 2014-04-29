@@ -104,6 +104,7 @@ button {
    line-height: 23px;
    outline: none;
    background: whitesmoke;
+   width: 76px; /* iOS fix */
 }
 
 .attribution {
