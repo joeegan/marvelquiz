@@ -5,17 +5,19 @@
 
    Game.init = function(){
 
-      Mq.Wallpaper.init();
-
       Game.initialiseDom();
       Game.initialiseEvents();
 
       Mq.Client.getCharactersWithImages(function(response) {
+         Mq.Wallpaper.init();
          Game.characterData = response;
          Game.attrubutionJq.html(response.attributionHTML);
          Mq.Autocomplete(Game.inputJq, response.names);
-         Game.inputJq.focus();
          Game.renderNewImage();
+         setTimeout(function(){
+            Game.gameJq.show();
+            Game.inputJq.focus();
+         }, 250);
       });
    };
 
@@ -30,7 +32,6 @@
          if (i == randomSelection) {
             console.log(Game.answer);
             img = thumbnail.path + '/detail.' + thumbnail.extension;
-            console.log(img);
             Game.imageLinkJq.attr('href', character.urls[0].url);
             Game.imageJq.attr('src', img);
          }
@@ -43,6 +44,7 @@
 
    Game.initialiseDom = function(){
       Game.addProps({
+         gameJq: $('.game-wrap'),
          correctJq: $('.alert-success'),
          incorrectJq: $('.alert-danger'),
          inputJq: $('input'),
@@ -66,11 +68,13 @@
    Game.handleCorrectAnswer = function(answer){
       Game.incorrectJq.addClass('hidden');
       Game.correctJq.html('<strong>Congratulations</strong>, you have the right answer, it was ' + answer + '.').removeClass('hidden');
+      Mq.Wallpaper.multiRender();
+      Game.renderNewImage();
+      Game.inputJq.blur();
       setTimeout(function(){
          Game.hideAlerts();
          Game.inputJq.val('').focus();
-         Game.renderNewImage();
-      }, 1500);
+      }, 2000);
    };
 
    Game.handleIncorrectAnswer = function(guess){
