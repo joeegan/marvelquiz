@@ -7,9 +7,9 @@
 
       Game.initialiseDom();
       Game.initialiseEvents();
+      Mq.Wallpaper.init();
 
-      Mq.Client.getCharactersWithImages(function(response) {
-         Mq.Wallpaper.init();
+      Mq.Client.getCharactersWithImages({nameStartsWith: Game.getRandomLetter()}, function(response) {
          Game.characterData = response;
          Game.attrubutionJq.html(response.attributionHTML);
          Mq.Autocomplete(Game.inputJq, response.names);
@@ -19,6 +19,10 @@
             Game.inputJq.focus();
          }, 250);
       });
+   };
+
+   Game.getRandomLetter = function(){
+      return 'abcdefghijklmnopqrstuvwxyz'.split('')[_.random(26)];
    };
 
    Game.renderNewImage = function(){
@@ -43,7 +47,7 @@
    };
 
    Game.initialiseDom = function(){
-      Game.addProps({
+      _.extend(Game, {
          gameJq: $('.game-wrap'),
          correctJq: $('.alert-success'),
          incorrectJq: $('.alert-danger'),
@@ -68,13 +72,23 @@
    Game.handleCorrectAnswer = function(answer){
       Game.incorrectJq.addClass('hidden');
       Game.correctJq.html('<strong>Congratulations</strong>, you have the right answer, it was ' + answer + '.').removeClass('hidden');
-      Mq.Wallpaper.multiRender();
-      Game.renderNewImage();
-      Game.inputJq.blur();
-      setTimeout(function(){
-         Game.hideAlerts();
-         Game.inputJq.val('').focus();
-      }, 2000);
+      Mq.Wallpaper.init();
+      Game.retrieveNewImage(function(){
+         Game.inputJq.blur();
+         setTimeout(function(){
+            Game.hideAlerts();
+            Game.inputJq.val('').focus();
+         }, 2000);
+      });
+   };
+
+   Game.retrieveNewImage = function(callback){
+      Mq.Client.getCharactersWithImages({nameStartsWith: Game.getRandomLetter()}, function(response) {
+         Game.characterData = response;
+         Mq.Autocomplete(Game.inputJq, response.names);
+         Game.renderNewImage();
+         callback();
+      });
    };
 
    Game.handleIncorrectAnswer = function(guess){
@@ -86,12 +100,6 @@
    Game.hideAlerts = function(){
       Game.correctJq.addClass('hidden');
       Game.incorrectJq.addClass('hidden');
-   };
-
-   Game.addProps = function(obj){
-      for (var key in obj) {
-         Game[key] = obj[key];
-      }
    };
 
    Game.answer = null;

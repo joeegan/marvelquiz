@@ -5,7 +5,7 @@
 
    Wallpaper.init = function(){
       Wallpaper.initialiseEvents();
-      Mq.Client.getWallpapers(function(wallpaperUrls){
+      Mq.Client.getWallpapers({nameStartsWith: Wallpaper.getRandomLetter()}, function(wallpaperUrls){
          Wallpaper.urls = wallpaperUrls;
          Wallpaper.multiRender();
       });
@@ -35,10 +35,15 @@
          }
          counter++;
       }, 50);
-   }
+   };
 
    Wallpaper.initialiseEvents = function(){
       $(window).resize(_.throttle(Wallpaper.render, 1000));
+   };
+
+   Wallpaper.getRandomLetter = function(){
+      var alphaWithExclusions = 'abcdefghijklmnopqrstuv';
+      return alphaWithExclusions.split('')[_.random(alphaWithExclusions.length - 1)];
    };
 
    Wallpaper.urls = null;

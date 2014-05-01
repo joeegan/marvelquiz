@@ -6,38 +6,34 @@
    function RestClient(){
    }
 
-   RestClient._send = function(url, callback, limit){
-      var params = $.param({ apikey:  PUBLIC_API_KEY, limit: limit || 100 });
-      $.get(URL_BASE + url + '?' + params, callback.bind(this));
+   RestClient._send = function(url, data){
+      var params = $.param(_.extend({ apikey:  PUBLIC_API_KEY, limit: 100 }, data));
+      return $.get(URL_BASE + url + '?' + params);
    };
 
-   RestClient.getCharactersWithImages = function(callback) {
-      if (RestClient.charactersWithImages) {
-         callback(RestClient.charactersWithImages);
-      } else {
-         var names = [];
-         RestClient._send(Mq.Urls.CHARACTER, function(response){
-            var processedData = response.data.results.filter(function(character) {
-               names.push(character.name);
-               return !character.thumbnail.path.match(/image_not_available$/);
-            });
-            processedData.names = names;
-            processedData.attributionHTML = response.attributionHTML;
-            RestClient.charactersWithImages = processedData;
-            callback(processedData);
+   RestClient.getCharactersWithImages = function(data, callback) {
+      var names = [];
+      RestClient._send(Mq.Urls.CHARACTER, data).then(function(response){
+         var processedData = response.data.results.filter(function(character) {
+            names.push(character.name);
+            return !character.thumbnail.path.match(/image_not_available$/);
          });
-      }
+         processedData.names = names;
+         processedData.attributionHTML = response.attributionHTML;
+         RestClient.charactersWithImages = processedData;
+         callback(processedData);
+      });
    };
 
    RestClient.charactersWithImages = null;
 
-   RestClient.getWallpapers = function(callback, limit) {
+   RestClient.getWallpapers = function(data, callback) {
 
-      RestClient.getCharactersWithImages(function(data, limit){
+      RestClient.getCharactersWithImages(data, function(characters){
          var wallpapers = [],
             url, imageData;
-         for(var i = 0; i < data.length; i++) {
-            imageData = data[i].thumbnail;
+         for(var i = 0; i < characters.length; i++) {
+            imageData = characters[i].thumbnail;
             url = imageData.path + '/standard_medium.' + imageData.extension;
             wallpapers.push(url);
          }

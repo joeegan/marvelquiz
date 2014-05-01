@@ -2,6 +2,8 @@
 
    function Autocomplete(typeaheadJq, data){
 
+      typeaheadJq.typeahead('destroy');
+
       var data = new Bloodhound({
          datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
          queryTokenizer: Bloodhound.tokenizers.whitespace,
